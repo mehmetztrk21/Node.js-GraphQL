@@ -10,6 +10,7 @@ import graphqlSchema from './graphql/schema.js';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import auth from './middleware/is-auth.js';
+import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -22,7 +23,7 @@ const fileStorage = multer.diskStorage({
     cb(null, 'images');
   },
   filename: function (req, file, cb) {
-    cb(null, uuidv4())
+    cb(null, uuidv4()+ '-' + file.originalname)
   }
 });
 
@@ -38,7 +39,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
+app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
@@ -59,6 +60,23 @@ app.use((req, res, next) => {
 });
 
 app.use(auth);
+
+
+app.put('/post-image', (req, res, next) => { 
+  console.log(req.body);
+  if (!req.isAuth) {
+    throw new Error('Not authenticated!');
+  }
+  if (!req.file) {
+    return res.status(200).json({ message: 'No file provided!' });
+  }
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+  return res
+    .status(201)
+    .json({ message: 'File stored.', filePath: req.file.path });
+});
 
 app.use("/graphql", graphqlHTTP({
   schema: graphqlSchema,
@@ -93,3 +111,8 @@ mongoose
 
   })
   .catch(err => console.log(err));
+
+  const clearImage = filePath => {
+    filePath = path.join(__dirname, '..', filePath);
+    fs.unlink(filePath, err => console.log(err));
+  };
