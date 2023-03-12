@@ -107,7 +107,21 @@ const resolver = {
        return {posts:posts.map(p=>{
               return {...p._doc, _id:p._id.toString(), createdAt:p.createdAt.toISOString(), updatedAt:p.updatedAt.toISOString()}
        }), totalItems:totalItems};
+    },
+    post: async function (args, req) { //query {post(id:"5f1f1b1b1b1b1b1b1b1b1b1b") {_id, title, content, imageUrl, creator{_id, name}, createdAt, updatedAt}}
+        if (!req.isAuth) {
+            const error = new Error("Not authenticated!");
+            error.code = 401;
+            throw error;
+        }
+        const post = await Post.findById(args.id).populate("creator");
+        if (!post) {
+            const error = new Error("No post found!");
+            error.code = 404;
+            throw error;
+        }
+        return { ...post._doc, _id: post._id.toString(), createdAt: post.createdAt.toISOString(), updatedAt: post.updatedAt.toISOString() };
     }
-
+        
 };
 export default resolver;
