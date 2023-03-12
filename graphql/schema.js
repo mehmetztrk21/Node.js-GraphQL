@@ -16,6 +16,10 @@ const schema = buildSchema(`
         name:String!
         posts:[Post!]!
     }
+    type PostData {
+        posts:[Post!]!
+        totalItems:Int!
+    }
     input PostInputData {
             title:String!
             content:String!
@@ -37,6 +41,7 @@ const schema = buildSchema(`
     }
     type RootQuery {
         login(email:String, password:String):AuthData!
+        posts:PostData!
     }     
     schema {
         query:RootQuery
