@@ -96,8 +96,14 @@ const resolver = {
             error.code = 401;
             throw error;
         }
+        if(!args.page){
+            args.page=1;
+        }
+        if(!args.limit){
+            args.limit=2;
+        }
         const totalItems = await Post.find().countDocuments();
-        const posts = await Post.find().sort({ createdAt: -1 }).populate("creator");
+        const posts = await Post.find().sort({ createdAt: -1 }).populate("creator").skip((args.page - 1) * args.limit).limit(args.limit);
        return {posts:posts.map(p=>{
               return {...p._doc, _id:p._id.toString(), createdAt:p.createdAt.toISOString(), updatedAt:p.updatedAt.toISOString()}
        }), totalItems:totalItems};
