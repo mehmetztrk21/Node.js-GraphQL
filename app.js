@@ -9,6 +9,7 @@ import graphqlResolver from './graphql/resolver.js';
 import graphqlSchema from './graphql/schema.js';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
+import auth from './middleware/is-auth.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -56,6 +57,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(auth);
 
 app.use("/graphql", graphqlHTTP({
   schema: graphqlSchema,

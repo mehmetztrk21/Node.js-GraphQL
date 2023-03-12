@@ -2,16 +2,17 @@ import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 import jwt from "jsonwebtoken";
+import Post from "../models/post.js";
 const resolver = {
-    login:async function({email, password}) {
-        const user = await User.findOne({email: email});
-        if(!user) {
+    login: async function ({ email, password }) { //query {login(email:"test@gmail.com", password:"test") {token, userId}}
+        const user = await User.findOne({ email: email });
+        if (!user) {
             const error = new Error("A user with this email could not be found.");
             error.code = 401;
             throw error;
         }
         const isEqual = await bcrypt.compare(password, user.password);
-        if(!isEqual) {
+        if (!isEqual) {
             const error = new Error("Wrong password!");
             error.code = 401;
             throw error;
@@ -20,27 +21,27 @@ const resolver = {
             {
                 email: user.email,
                 userId: user._id.toString()
-            }, "someSuperSecretSecret", {expiresIn: "1h"}
+            }, "someSuperSecretSecret", { expiresIn: "1h" }
         );
-        return {token: token, userId: user._id.toString()};
+        return { token: token, userId: user._id.toString() };
     },
-    createUser: async function(args, req) {  //or {userInput}, req
+    createUser: async function (args, req) {  //mutation { createUser(userInput:{email:"test@gmail.com",name:"Mehmet", password:"test"}){_id, email} }
         const errors = [];
-        if(!validator.isEmail(args.userInput.email)) {
-            errors.push({message: "E-mail is invalid"});
+        if (!validator.isEmail(args.userInput.email)) {
+            errors.push({ message: "E-mail is invalid" });
         }
-        if(validator.isEmpty(args.userInput.password) || !validator.isLength(args.userInput.password, {min: 5})) {
-            errors.push({message: "Password too short!"});
+        if (validator.isEmpty(args.userInput.password) || !validator.isLength(args.userInput.password, { min: 5 })) {
+            errors.push({ message: "Password too short!" });
         }
-        if(errors.length > 0) {
+        if (errors.length > 0) {
             const error = new Error("Invalid input.");
             error.data = errors;
             error.code = 422;
             throw error;
         }
 
-        const existingUser = await User.findOne({email: args.userInput.email});
-        if(existingUser) {
+        const existingUser = await User.findOne({ email: args.userInput.email });
+        if (existingUser) {
             const error = new Error("User exists already!");
             throw error;
         }
@@ -51,7 +52,43 @@ const resolver = {
             password: hashedPw
         });
         const createdUser = await user.save();
-        return {...createdUser._doc, _id: createdUser._id.toString()};
+        return { ...createdUser._doc, _id: createdUser._id.toString() };
+    },
+    createPost: async function (args, req) { //mutation { createPost(postInput:{title:"Test", content:"Test Content", imageUrl:"https://www.google.com"}){_id, title, content, imageUrl, creator{_id, name}} }
+        console.log(req.isAuth)
+        if (!req.isAuth) {
+            const error = new Error("Not authenticated!");
+            error.code = 401;
+            throw error;
+        }
+        const errors = [];
+        if (validator.isEmpty(args.postInput.title) || !validator.isLength(args.postInput.title, { min: 5 })) {
+            errors.push({ message: "Title is invalid!" });
+        }
+        if (validator.isEmpty(args.postInput.content) || !validator.isLength(args.postInput.content, { min: 5 })) {
+            errors.push({ message: "Content is invalid!" });
+        }
+        if (errors.length > 0) {
+            const error = new Error("Invalid input.");
+            error.data = errors;
+            error.code = 422;
+            throw error;
+        }
+        const user = await User.findById(req.userId);
+        if (!user) {
+            const error = new Error("Invalid user.");
+            error.code = 401;
+            throw error;
+        }
+        const post = new Post({
+            title: args.postInput.title,
+            content: args.postInput.content,
+            imageUrl: "images/" + args.postInput.imageUrl,
+            creator: user
+        });
+        const createPost = await post.save();
+        user.posts.push(createPost);
+        return { ...createPost._doc, _id: createPost._id.toString(), createdAt: createPost.createdAt.toISOString(), updatedAt: createPost.updatedAt.toISOString() };
     }
 
 };
