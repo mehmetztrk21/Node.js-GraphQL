@@ -23,7 +23,7 @@ const schema = buildSchema(`
     input PostInputData {
             title:String!
             content:String!
-            imageUrl:String!
+            imageUrl:String
         }
 
         input UserInputData {
@@ -34,6 +34,7 @@ const schema = buildSchema(`
     type RootMutation {
         createUser(userInput:UserInputData):User!
         createPost(postInput:PostInputData):Post!
+        updatePost(id:ID!, postInput:PostInputData):Post!
     }
     type AuthData {
         token:String!
