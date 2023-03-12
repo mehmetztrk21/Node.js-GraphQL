@@ -55,6 +55,20 @@ const resolver = {
         const createdUser = await user.save();
         return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
+    user: async function (args, req) { //query {user {_id, name, email, status, posts{_id, title, content, imageUrl, createdAt, updatedAt}}}
+        if (!req.isAuth) {
+            const error = new Error("Not authenticated!");
+            error.code = 401;
+            throw error;
+        }
+        const user = await User.findById(req.userId);
+        if (!user) {
+            const error = new Error("Invalid user.");
+            error.code = 401;
+            throw error;
+        }
+        return { ...user._doc, _id: user._id.toString() };
+    },
     createPost: async function (args, req) { //mutation { createPost(postInput:{title:"Test", content:"Test Content", imageUrl:"https://www.google.com"}){_id, title, content, imageUrl, creator{_id, name}} }
         console.log(req.isAuth)
         if (!req.isAuth) {

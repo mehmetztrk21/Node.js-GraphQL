@@ -31,20 +31,22 @@ const schema = buildSchema(`
             password:String!
             name:String!
         }
+        type AuthData {
+            token:String!
+            userId:String!
+        }
     type RootMutation {
         createUser(userInput:UserInputData):User!
         createPost(postInput:PostInputData):Post!
         updatePost(id:ID!, postInput:PostInputData):Post!
         deletePost(id:ID!):Boolean!
-    }
-    type AuthData {
-        token:String!
-        userId:String!
+        updateStatus(status:String!):User!
     }
     type RootQuery {
         login(email:String, password:String):AuthData!
         posts(page:Int,limit:Int):PostData!
         post (id:ID!):Post!
+        user:User!
     }     
     schema {
         query:RootQuery
