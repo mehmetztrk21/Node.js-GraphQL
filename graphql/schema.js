@@ -14,6 +14,7 @@ const schema = buildSchema(`
         email:String!
         password:String
         name:String!
+        status:String!
         posts:[Post!]!
     }
     type PostData {
