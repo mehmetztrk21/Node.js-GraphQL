@@ -10,9 +10,9 @@ import graphqlSchema from './graphql/schema.js';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import auth from './middleware/is-auth.js';
-import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+import { clearImage } from './utils/file.js';
 const app = express();
 
 
@@ -112,7 +112,3 @@ mongoose
   })
   .catch(err => console.log(err));
 
-  const clearImage = filePath => {
-    filePath = path.join(__dirname, '..', filePath);
-    fs.unlink(filePath, err => console.log(err));
-  };

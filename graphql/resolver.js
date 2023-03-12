@@ -1,8 +1,9 @@
-import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import validator from "validator";
 import jwt from "jsonwebtoken";
+import validator from "validator";
 import Post from "../models/post.js";
+import User from "../models/user.js";
+import { clearImage } from "../utils/file.js";
 const resolver = {
     login: async function ({ email, password }) { //query {login(email:"test@gmail.com", password:"test") {token, userId}}
         const user = await User.findOne({ email: email });
@@ -88,6 +89,7 @@ const resolver = {
         });
         const createPost = await post.save();
         user.posts.push(createPost);
+        await user.save();
         return { ...createPost._doc, _id: createPost._id.toString(), createdAt: createPost.createdAt.toISOString(), updatedAt: createPost.updatedAt.toISOString() };
     },
     posts: async function (args, req) { //query {posts {posts{_id, title, content, imageUrl, creator{_id, name}, createdAt, updatedAt}, totalItems}}
@@ -96,17 +98,19 @@ const resolver = {
             error.code = 401;
             throw error;
         }
-        if(!args.page){
-            args.page=1;
+        if (!args.page) {
+            args.page = 1;
         }
-        if(!args.limit){
-            args.limit=2;
+        if (!args.limit) {
+            args.limit = 2;
         }
         const totalItems = await Post.find().countDocuments();
         const posts = await Post.find().sort({ createdAt: -1 }).populate("creator").skip((args.page - 1) * args.limit).limit(args.limit);
-       return {posts:posts.map(p=>{
-              return {...p._doc, _id:p._id.toString(), createdAt:p.createdAt.toISOString(), updatedAt:p.updatedAt.toISOString()}
-       }), totalItems:totalItems};
+        return {
+            posts: posts.map(p => {
+                return { ...p._doc, _id: p._id.toString(), createdAt: p.createdAt.toISOString(), updatedAt: p.updatedAt.toISOString() }
+            }), totalItems: totalItems
+        };
     },
     post: async function (args, req) { //query {post(id:"5f1f1b1b1b1b1b1b1b1b1b1b") {_id, title, content, imageUrl, creator{_id, name}, createdAt, updatedAt}}
         if (!req.isAuth) {
@@ -159,8 +163,30 @@ const resolver = {
         }
         const updatedPost = await post.save();
         return { ...updatedPost._doc, _id: updatedPost._id.toString(), createdAt: updatedPost.createdAt.toISOString(), updatedAt: updatedPost.updatedAt.toISOString() };
+    },
+    deletePost: async function (args, req) { //mutation {deletePost(id:"5f1f1b1b1b1b1b1b1b1b1b1b") {_id, title, content, imageUrl, creator{_id, name}, createdAt, updatedAt}}
+        if (!req.isAuth) {
+            const error = new Error("Not authenticated!");
+            error.code = 401;
+            throw error;
+        }
+        const post = await Post.findById(args.id);
+        if (!post) {
+            const error = new Error("No post found!");
+            error.code = 404;
+            throw error;
+        }
+        if (post.creator.toString() !== req.userId.toString()) {
+            const error = new Error("Not authorized!");
+            error.code = 403;
+            throw error;
+        }
+        clearImage(post.imageUrl);
+        await Post.findByIdAndRemove(args.id);
+        const user = await User.findById(req.userId);
+        user.posts.pull(args.id);
+        await user.save();
+        return true;
     }
-
-        
 };
 export default resolver;
