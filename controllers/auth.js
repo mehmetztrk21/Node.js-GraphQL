@@ -1,8 +1,8 @@
-const { validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
+import User from '../models/user.js';
 
-const User = require('../models/user');
 
 exports.signup = async (req, res, next) => {
   const errors = validationResult(req);

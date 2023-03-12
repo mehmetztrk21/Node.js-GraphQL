@@ -1,19 +1,20 @@
-const path = require('path');
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const multer = require('multer');
-
-const  { graphqlHTTP } = require('express-graphql')
-const graphqlSchema = require("./graphql/schema");
-const graphqlResolver = require("./graphql/resolver");
-
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import multer from 'multer';
+import { graphqlHTTP } from 'express-graphql';
+import graphqlResolver from './graphql/resolver.js';
+import graphqlSchema from './graphql/schema.js';
+import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 
-
-const { v4: uuidv4 } = require('uuid');
+//es6 uuid
 
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -56,7 +57,7 @@ app.use((req, res, next) => {
 app.use("/graphql", graphqlHTTP({
   schema: graphqlSchema,
   rootValue: graphqlResolver
-}));
+})); 
 
 
 app.use((error, req, res, next) => {
