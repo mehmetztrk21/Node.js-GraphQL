@@ -1,12 +1,28 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import validator from "validator";
+import jwt from "jsonwebtoken";
 const resolver = {
-    hello() {
-        return {
-            text:"Hello World!",
-            views:1450
-        };
+    login:async function({email, password}) {
+        const user = await User.findOne({email: email});
+        if(!user) {
+            const error = new Error("A user with this email could not be found.");
+            error.code = 401;
+            throw error;
+        }
+        const isEqual = await bcrypt.compare(password, user.password);
+        if(!isEqual) {
+            const error = new Error("Wrong password!");
+            error.code = 401;
+            throw error;
+        }
+        const token = jwt.sign(
+            {
+                email: user.email,
+                userId: user._id.toString()
+            }, "someSuperSecretSecret", {expiresIn: "1h"}
+        );
+        return {token: token, userId: user._id.toString()};
     },
     createUser: async function(args, req) {  //or {userInput}, req
         const errors = [];
