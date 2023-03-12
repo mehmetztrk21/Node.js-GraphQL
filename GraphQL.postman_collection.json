@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "95ac4b0e-0351-4a30-874b-d8292f6d1332",
+		"name": "GraphQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "16554103"
+	},
+	"item": [
+		{
+			"name": "Create Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation { createPost(postInput:{title:\"Testt\", content:\"Test Content\", imageUrl:\"https://www.google.com\"}){_id, title, content, imageUrl, creator{_id, name}} }",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation { updatePost(id:\"640dcad9ca3edbc88bf634f3\" postInput:{title:\"Test Updated\", content:\"Test Updated Content\", imageUrl:\"images/https://www.google.com\"}){_id, title, content, imageUrl, creator{_id, name}} }",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Post Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation { updateStatus(status:\"test 2\"){_id,name,status}} ",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation { deletePost(id:\"640dcad9ca3edbc88bf634f3\") }",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI1MzIzLCJleHAiOjE2Nzg2Mjg5MjN9.eTdk8Phv-fyp8xBPfR3X2E9kB9kc2pMmqmPnyTysRXw"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation { createUser(userInput: {email:\"mehmet@gmail.com\", password:\"ztrk1234\", name:\"Mehmet Öztürk\"}) {name} }",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {login(email:\"test@gmail.com\", password:\"test\") {token,userId}}",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Posts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI1MzIzLCJleHAiOjE2Nzg2Mjg5MjN9.eTdk8Phv-fyp8xBPfR3X2E9kB9kc2pMmqmPnyTysRXw"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query { posts(page:1,limit:2) {posts{_id, title,content,imageUrl, creator{name, email}}, totalItems}}",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query { post(id:\"640dcad9ca3edbc88bf634f3\") {_id, title,content,imageUrl, creator{name, email}}}",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {user{name,email,_id}}",
+						"variables": ""
+					}
+				},
+				"url": "http://localhost:8080/graphql"
+			},
+			"response": []
+		},
+		{
+			"name": "Send Image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidXNlcklkIjoiNjQwZGIxMGUwYTAyYjQxMGI2ZDZhYmY0IiwiaWF0IjoxNjc4NjI5MzcxLCJleHAiOjE2Nzg2MzI5NzF9.bWd_0-OIDWM2o_6BaoFpj0clnY075qt4bfKrmFtePRk"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": "http://localhost:8080/post-image"
+			},
+			"response": []
+		}
+	]
+}
