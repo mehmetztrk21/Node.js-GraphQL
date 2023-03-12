@@ -1,18 +1,18 @@
 
-import path from 'path';
-import express from 'express';
 import bodyParser from 'body-parser';
+import express from 'express';
+import { graphqlHTTP } from 'express-graphql';
 import mongoose from 'mongoose';
 import multer from 'multer';
-import { graphqlHTTP } from 'express-graphql';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
 import graphqlResolver from './graphql/resolver.js';
 import graphqlSchema from './graphql/schema.js';
-import { v4 as uuidv4 } from 'uuid';
-import { fileURLToPath } from 'url';
 import auth from './middleware/is-auth.js';
+import { clearImage } from './utils/file.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import { clearImage } from './utils/file.js';
 const app = express();
 
 
